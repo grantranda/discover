@@ -47,14 +47,16 @@ app.get("/multiplayer/join", async (req, res) => {
         res.end();
     });
 
-    while (true) {
-        // await new Promise(resolve => setTimeout(resolve, 1000))
-        res.write(JSON.stringify([
-            {
-                title: "Multiplayer - Join"
-            }
-        ]));
-    }
+    res.write(`title: ${JSON.stringify("Joined")}`)
+
+    // while (true) {
+    //     // await new Promise(resolve => setTimeout(resolve, 1000))
+    //     res.write(JSON.stringify([
+    //         {
+    //             title: "Multiplayer - Join"
+    //         }
+    //     ]));
+    // }
 });
 
 app.listen(3001, "0.0.0.0", 511, () => {
