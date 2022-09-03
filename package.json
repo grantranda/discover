@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "dependencies": {
     "@onehop/client": "^1.3.13",
     "@onehop/js": "^1.3.18",

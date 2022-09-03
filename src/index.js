@@ -1,11 +1,12 @@
-import {hop} from ".";
-import {ChannelType} from "@onehop/js";
+import {ChannelType, Hop} from "@onehop/js";
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
 
-const express = require("express")
-const bodyParser = require("body-parser")
-const cors = require("cors")
-const helmet = require("helmet")
-const morgan = require("morgan")
+const projectToken = "ptk_c181NDNlZGUzZGM2ZmM1YTcxYzM0MWRkOGYyZTlkYzE2N181MDM4MTc3OTIyNjUzMzkxMw";
+export const hop = new Hop(projectToken)
 
 const app = express();
 const ads = [
