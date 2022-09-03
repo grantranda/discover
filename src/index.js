@@ -31,8 +31,6 @@ wss.on("connection", (ws, req) => {
             title: "Send message"
         }));
     });
-
-    ws.on("close")
 });
 
 app.use(helmet());
