@@ -20,6 +20,10 @@ app.get("/", (req, res) => {
     res.send(ads);
 });
 
+app.get("/multiplayer/create", (req, res) => {
+    res.send([{title: "Multiplayer - Create"}]);
+});
+
 app.listen(3001, "0.0.0.0", 511, () => {
     console.log("Listening on port 3001");
 });
