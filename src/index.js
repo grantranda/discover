@@ -49,11 +49,11 @@ app.get("/multiplayer/join", async (req, res) => {
 
     while (true) {
         // await new Promise(resolve => setTimeout(resolve, 1000))
-        res.write([
+        res.write(JSON.stringify([
             {
                 title: "Multiplayer - Join"
             }
-        ])
+        ]));
     }
 });
 
