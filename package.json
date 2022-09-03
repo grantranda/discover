@@ -6,7 +6,8 @@
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "helmet": "^6.0.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "request": "^2.88.2"
   },
   "name": "discover",
   "version": "1.0.0",
@@ -25,6 +26,5 @@
     "url": "https://github.com/grantranda/discover/issues"
   },
   "homepage": "https://github.com/grantranda/discover#readme",
-  "devDependencies": {},
   "description": ""
 }
