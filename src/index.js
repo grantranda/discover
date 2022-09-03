@@ -6,25 +6,33 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import {uuid} from "uuidv4";
+import * as url from "url";
 
 const projectToken = "ptk_c181NDNlZGUzZGM2ZmM1YTcxYzM0MWRkOGYyZTlkYzE2N181MDM4MTc3OTIyNjUzMzkxMw";
 export const hop = new Hop(projectToken)
 
 const app = express();
 const server = http.createServer();
-const wss = new WebSocketServer({server: server})
+const wss = new WebSocketServer({server: server});
+const idMap = new Map();
 
 server.on("request", app);
-wss.on("connection", (ws) => {
-    console.log("Connection");
+wss.on("connection", (ws, req) => {
+    console.log("Client connected");
+    const parameters = url.parse(req.url, true);
+    let id = {id: parameters.query.id};
+    console.log("ID:", id);
 
     ws.on("message", (message) => {
         console.log("Received:", message);
 
         ws.send(JSON.stringify({
             title: "Send message"
-        }))
+        }));
     });
+
+    ws.on("close")
 });
 
 app.use(helmet());
