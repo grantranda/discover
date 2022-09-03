@@ -35,6 +35,28 @@ app.get("/multiplayer/create", async (req, res) => {
     ]);
 });
 
+app.get("/multiplayer/join", async (req, res) => {
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Connection", "keep-alive");
+    res.flushHeaders();
+
+    res.on("close", () => {
+        console.log("Connection closed");
+        res.end();
+    });
+
+    while (true) {
+        // await new Promise(resolve => setTimeout(resolve, 1000))
+        res.write([
+            {
+                title: "Multiplayer - Join"
+            }
+        ])
+    }
+});
+
 app.listen(3001, "0.0.0.0", 511, () => {
     console.log("Listening on port 3001");
 });
