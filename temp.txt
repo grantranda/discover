@@ -1,14 +1,9 @@
-func createSession() {
-    var request = URLRequest(url: URL(string: "https://solve.hop.sh/multiplayer/create")!)
-    request.httpMethod = "GET"
+func createChannel() async throws -> CreateResponse {
+        let session = URLSession.shared
+        let response = try await session.data(from: URL(string: "https://solve.hop.sh/multiplayer/create")!)
+        return try JSONDecoder().decode(CreateResponse.self, from: response.0)
+    }
+}
+struct CreateResponse: Codable {
     
-    let task = URLSession.shared.dataTask(with: request, completionHandler: { data, response, error -> Void in
-        do {
-            let json = try JSONSerialization.jsonObject(with: data!) as! Array<Dictionary<String, AnyObject>>
-            print(json)
-        } catch {
-            print("Error")
-        }
-    })
-    task.resume()
 }
