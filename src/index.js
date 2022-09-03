@@ -9,6 +9,8 @@ const ads = [
     {title: "Hello world!"}
 ];
 
+console.log("Server started")
+
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(cors());
