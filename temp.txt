@@ -1,0 +1,9 @@
+func createChannel() async throws -> CreateResponse {
+        let session = URLSession.shared
+        let response = try await session.data(from: URL(string: "https://solve.hop.sh/multiplayer/create")!)
+        return try JSONDecoder().decode(CreateResponse.self, from: response.0)
+    }
+}
+struct CreateResponse: Codable {
+    
+}
