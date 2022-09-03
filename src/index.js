@@ -1,3 +1,6 @@
+import {hop} from ".";
+import {ChannelType} from "@onehop/js";
+
 const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
@@ -20,8 +23,15 @@ app.get("/", (req, res) => {
     res.send(ads);
 });
 
-app.get("/multiplayer/create", (req, res) => {
-    res.send([{title: "Multiplayer - Create"}]);
+app.get("/multiplayer/create", async (req, res) => {
+    const channel = await hop.channels.create(ChannelType.UNPROTECTED)
+
+    res.send([
+        {
+            title: "Multiplayer - Create",
+            channelId: channel.id
+        }
+    ]);
 });
 
 app.listen(3001, "0.0.0.0", 511, () => {
