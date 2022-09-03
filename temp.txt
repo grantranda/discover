@@ -1,0 +1,14 @@
+func createSession() {
+    var request = URLRequest(url: URL(string: "https://solve.hop.sh/multiplayer/create")!)
+    request.httpMethod = "GET"
+    
+    let task = URLSession.shared.dataTask(with: request, completionHandler: { data, response, error -> Void in
+        do {
+            let json = try JSONSerialization.jsonObject(with: data!) as! Array<Dictionary<String, AnyObject>>
+            print(json)
+        } catch {
+            print("Error")
+        }
+    })
+    task.resume()
+}
