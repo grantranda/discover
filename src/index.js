@@ -6,8 +6,33 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
-import {uuid} from "uuidv4";
 import * as url from "url";
+
+class Session {
+    channelId;
+    clientIds = [];
+
+    constructor(channelId) {
+        this.channelId = channelId;
+    }
+
+    addClient(clientId) {
+        this.clientIds.push(clientId);
+        console.log("Client added:", clientId);
+    }
+
+    removeClient(clientId) {
+        const index = this.clientIds.indexOf(clientId);
+        if (index > -1) {
+            this.clientIds.splice(index, 1);
+            console.log("Client removed:", clientId);
+
+            if (this.clientIds.length <= 0) {
+                // TODO: Delete channel
+            }
+        }
+    }
+}
 
 const projectToken = "ptk_c181NDNlZGUzZGM2ZmM1YTcxYzM0MWRkOGYyZTlkYzE2N181MDM4MTc3OTIyNjUzMzkxMw";
 export const hop = new Hop(projectToken)
@@ -15,14 +40,14 @@ export const hop = new Hop(projectToken)
 const app = express();
 const server = http.createServer();
 const wss = new WebSocketServer({server: server});
-const idMap = new Map();
+const sessions = new Map();
 
 server.on("request", app);
 wss.on("connection", (ws, req) => {
     console.log("Client connected");
-    const parameters = url.parse(req.url, true);
-    let id = {id: parameters.query.id};
-    console.log("ID:", id);
+    // const parameters = url.parse(req.url, true);
+    // let id = {id: parameters.query.id};
+    // console.log("ID:", id);
 
     ws.on("message", (message) => {
         console.log("Received:", message);
@@ -47,16 +72,37 @@ app.get("/", (req, res) => {
 
 app.get("/multiplayer/create", async (req, res) => {
     const channel = await hop.channels.create(ChannelType.UNPROTECTED)
+    let session = new Session(channel.id);
+    sessions.set(channel.id, session);
 
     res.send(
         {
-            title: "Channel created",
+            title: "Session created",
             channelId: channel.id
         }
     );
 });
 
+app.get("/multiplayer/join", async (req, res) => {
+    const parameters = url.parse(req.url, true);
+    let clientId = {clientId: parameters.query.clientId};
+    let channelId = {channelId: parameters.query.channelId};
+    console.log("Client ID:", clientId);
+    console.log("Channel ID:", channelId);
 
+    let session = sessions.get(channelId);
+    if (session !== undefined) {
+        session.addClient(clientId);
+
+        res.send({
+            title: "Session joined"
+        });
+    } else {
+        res.send({
+            title: "Unable to join session"
+        });
+    }
+});
 
 // app.get("/multiplayer/join", (req, res) => {
 //     // res.setHeader("Cache-Control", "no-cache");
