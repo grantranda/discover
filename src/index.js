@@ -51,16 +51,14 @@ class Session {
     }
 
     startGame() {
-        let host = clients.get(this.hostId);
-        console.log("Host ID:", this.hostId);
-        if (host !== undefined) {
-            // wss.broadcast("start", host);
-            for (let i = 0; i < this.clientIds.size; i++) {
-                clients.get(this.clientIds[i]).send(JSON.stringify({
-                    title: "Game starting"
-                }));
+        console.log("Starting game");
+
+        let clientIds = this.clientIds;
+        clients.forEach(function(clientId, client, map) {
+            if (clientIds.includes(clientId)) {
+                client.send("start");
             }
-        }
+        });
     }
 }
 
@@ -104,11 +102,6 @@ wss.on("connection", (ws, req) => {
             if (tokens.length > 1) {
                 const puzzle = tokens[1];
             } else {
-                console.log("Starting game");
-
-                clientList.forEach(function(client) {
-                    client.send(message);
-                });
                 let session = sessions.get(channelId);
                 if (session !== undefined) {
                     session.startGame();
