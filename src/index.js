@@ -35,7 +35,7 @@ class Session {
     }
 }
 
-function joinSession(clientId, channelId) {
+function joinSession(clientId, channelId, ws) {
     console.log("Client ID:", clientId);
     console.log("Channel ID:", channelId);
 
@@ -43,13 +43,13 @@ function joinSession(clientId, channelId) {
     if (session !== undefined) {
         session.addClient(clientId);
 
-        res.send({
+        ws.send(JSON.stringify({
             title: "Session joined"
-        });
+        }));
     } else {
-        res.send({
+        ws.send(JSON.stringify({
             title: "Unable to join session"
-        });
+        }));
     }
 }
 
@@ -83,7 +83,7 @@ wss.on("connection", (ws, req) => {
             const parameters = url.parse(req.url, true);
             let clientId = {clientId: parameters.query.clientId};
             let channelId = {channelId: parameters.query.channelId};
-            joinSession(clientId, channelId);
+            joinSession(clientId, channelId, ws);
             break;
         default:
             break;
