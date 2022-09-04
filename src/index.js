@@ -56,6 +56,9 @@ wss.on("connection", (ws, req) => {
             title: "Send message"
         }));
     });
+
+    const location = url.parse(req.url, true);
+    console.log("Location:", location);
 });
 
 app.use(helmet());
