@@ -17,18 +17,11 @@ const sessions = new Map();
 const clients = new Map();
 const clientList = [];
 
-wss.broadcast = function(data, sender) {
-    wss.clients.forEach(function(client) {
-        // if (client !== sender) {
-        client.send(data);
-        // }
-    })
-};
-
 class Session {
     channelId;
     hostId;
     clientIds = [];
+    points = [];
 
     constructor(channelId) {
         this.channelId = channelId;
@@ -55,15 +48,15 @@ class Session {
 
         let clientIds = this.clientIds;
         clients.forEach(function(clientId, client, map) {
-            if (clientIds.includes(clientId)) {
-                client.send("start");
-            }
+            // if (clientIds.includes(clientId)) {
+            client.send("start");
+            // }
         });
     }
 }
 
 function joinSession(clientId, channelId, ws) {
-    console.log("Attempting to join session...")
+    console.log("Joining session")
     console.log("\tClient ID:", clientId);
     console.log("\tChannel ID:", channelId);
 
@@ -97,16 +90,25 @@ wss.on("connection", (ws, req) => {
         console.log("Received:", message);
 
         if (message.includes("start")) {
-            const tokens = message.split(" ");
+            console.log("Starting game");
 
-            if (tokens.length > 1) {
-                const puzzle = tokens[1];
-            } else {
-                let session = sessions.get(channelId);
-                if (session !== undefined) {
-                    session.startGame();
-                }
+            let session = sessions.get(channelId);
+            if (session !== undefined) {
+                session.startGame();
             }
+
+            // const tokens = message.split(" ");
+            //
+            // if (tokens.length > 1) {
+            //     const puzzle = tokens[1];
+            // } else {
+            //     let session = sessions.get(channelId);
+            //     if (session !== undefined) {
+            //         session.startGame();
+            //     }
+            // }
+        } else if (message.includes("score")) {
+            ws.send(message);
         }
 
         switch (message) {
