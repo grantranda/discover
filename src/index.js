@@ -128,6 +128,7 @@ app.get("/", (req, res) => {
 app.get("/multiplayer/create", async (req, res) => {
     const channel = await hop.channels.create(ChannelType.UNPROTECTED)
     const parameters = url.parse(req.url, true);
+    console.log("Host ID1:", parameters.query.hostId);
     let session = new Session(channel.id, parameters.query.hostId);
     sessions.set(channel.id, session);
 
