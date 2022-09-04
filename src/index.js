@@ -64,6 +64,8 @@ wss.on("connection", (ws, req) => {
     ws.on("message", (data, isBinary) => {
         const message = isBinary ? data : data.toString();
         console.log("Received:", message);
+        console.log("Data:", data);
+        console.log("String:", data.toString());
 
         switch (message) {
             case "start":
