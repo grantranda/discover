@@ -50,6 +50,8 @@ class Session {
 
     startGame() {
         let host = clients.get(this.hostId);
+        console.log("Host ID:", this.hostId);
+        console.log("Host:", host);
         if (host !== undefined) {
             wss.broadcast("start", host);
         }
@@ -93,6 +95,8 @@ wss.on("connection", (ws, req) => {
             case "start":
                 console.log("Starting game");
                 let session = sessions.get(channelId);
+                console.log("Channel ID:", channelId);
+                console.log("Session:", session)
                 if (session !== undefined) {
                     session.startGame();
                 }
