@@ -48,12 +48,12 @@ app.get("/", (req, res) => {
 app.get("/multiplayer/create", async (req, res) => {
     const channel = await hop.channels.create(ChannelType.UNPROTECTED)
 
-    res.send([
+    res.send(
         {
-            title: "Multiplayer - Create",
+            title: "Channel created",
             channelId: channel.id
         }
-    ]);
+    );
 });
 
 
