@@ -8,12 +8,31 @@ import helmet from "helmet";
 import morgan from "morgan";
 import * as url from "url";
 
+const projectToken = "ptk_c181NDNlZGUzZGM2ZmM1YTcxYzM0MWRkOGYyZTlkYzE2N181MDM4MTc3OTIyNjUzMzkxMw";
+export const hop = new Hop(projectToken)
+const app = express();
+const server = http.createServer();
+const wss = new WebSocketServer({server: server});
+const sessions = new Map();
+const clients = new Map();
+
+wss.broadcast = function(data, sender) {
+    wss.clients.forEach(function(client) {
+        // if (client !== sender) {
+        client.send(data);
+        // }
+    })
+};
+
 class Session {
     channelId;
+    hostId;
     clientIds = [];
 
-    constructor(channelId) {
+    constructor(channelId, hostId) {
         this.channelId = channelId;
+        this.hostId = hostId;
+        this.addClient(hostId);
     }
 
     addClient(clientId) {
@@ -28,14 +47,14 @@ class Session {
             console.log("Client removed:", clientId);
         }
     }
-}
 
-const projectToken = "ptk_c181NDNlZGUzZGM2ZmM1YTcxYzM0MWRkOGYyZTlkYzE2N181MDM4MTc3OTIyNjUzMzkxMw";
-export const hop = new Hop(projectToken)
-const app = express();
-const server = http.createServer();
-const wss = new WebSocketServer({server: server});
-const sessions = new Map();
+    startGame() {
+        let host = clients.get(this.hostId);
+        if (host !== undefined) {
+            wss.broadcast("start", host);
+        }
+    }
+}
 
 function joinSession(clientId, channelId, ws) {
     console.log("Attempting to join session...")
@@ -60,16 +79,23 @@ server.on("request", app);
 
 wss.on("connection", (ws, req) => {
     console.log("Client connected");
+    const parameters = url.parse(req.url, true);
+    let clientId = parameters.query.clientId;
+    let channelId = parameters.query.channelId;
+
+    clients.set(clientId, ws);
 
     ws.on("message", (data, isBinary) => {
         const message = isBinary ? data : data.toString();
         console.log("Received:", message);
-        console.log("Data:", data);
-        console.log("String:", data.toString());
 
         switch (message) {
             case "start":
                 console.log("Starting game");
+                let session = sessions.get(channelId);
+                if (session !== undefined) {
+                    session.startGame();
+                }
                 break;
             default:
                 break;
@@ -80,9 +106,6 @@ wss.on("connection", (ws, req) => {
 
     switch (location.pathname) {
         case "/multiplayer/join":
-            const parameters = url.parse(req.url, true);
-            let clientId = parameters.query.clientId;
-            let channelId = parameters.query.channelId;
             joinSession(clientId, channelId, ws);
             break;
         default:
@@ -100,9 +123,9 @@ app.get("/", (req, res) => {
 });
 app.get("/multiplayer/create", async (req, res) => {
     const channel = await hop.channels.create(ChannelType.UNPROTECTED)
-    let session = new Session(channel.id);
+    const parameters = url.parse(req.url, true);
+    let session = new Session(channel.id, parameters.query.hostId);
     sessions.set(channel.id, session);
-    console.log(sessions)
 
     res.send(
         {
