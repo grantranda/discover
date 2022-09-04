@@ -108,7 +108,9 @@ wss.on("connection", (ws, req) => {
             //     }
             // }
         } else if (message.includes("score")) {
-            ws.send(message);
+            clients.forEach(function(clientId, client, map) {
+                client.send(message);
+            });
         }
 
         switch (message) {
