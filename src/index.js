@@ -39,6 +39,7 @@ function joinSession(clientId, channelId, ws) {
     console.log("Channel ID:", channelId);
 
     let session = sessions.get(channelId);
+    console.log(session);
     if (session !== undefined) {
         session.addClient(clientId);
 
