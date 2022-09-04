@@ -21,7 +21,6 @@ class Session {
     channelId;
     hostId;
     clientIds = [];
-    points = [];
 
     constructor(channelId) {
         this.channelId = channelId;
@@ -46,11 +45,8 @@ class Session {
     startGame() {
         console.log("Starting game");
 
-        let clientIds = this.clientIds;
         clients.forEach(function(clientId, client, map) {
-            // if (clientIds.includes(clientId)) {
             client.send("start");
-            // }
         });
     }
 }
@@ -96,31 +92,10 @@ wss.on("connection", (ws, req) => {
             if (session !== undefined) {
                 session.startGame();
             }
-
-            // const tokens = message.split(" ");
-            //
-            // if (tokens.length > 1) {
-            //     const puzzle = tokens[1];
-            // } else {
-            //     let session = sessions.get(channelId);
-            //     if (session !== undefined) {
-            //         session.startGame();
-            //     }
-            // }
         } else if (message.includes("score")) {
             wss.clients.forEach(function(client) {
                 client.send(message);
             });
-            // clients.forEach(function(clientId, client, map) {
-            //     client.send(message);
-            // });
-        }
-
-        switch (message) {
-            case "start":
-                break;
-            default:
-                break;
         }
     });
 
