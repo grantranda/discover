@@ -82,8 +82,8 @@ wss.on("connection", (ws, req) => {
     switch (location.pathname) {
         case "/multiplayer/join":
             const parameters = url.parse(req.url, true);
-            let clientId = {clientId: parameters.query.clientId};
-            let channelId = {channelId: parameters.query.channelId};
+            let clientId = {clientId: parameters.query.clientId}.clientId;
+            let channelId = {channelId: parameters.query.channelId}.channelId;
             joinSession(clientId, channelId, ws);
             break;
         default:
