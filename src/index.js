@@ -28,6 +28,7 @@ class Session {
     channelId;
     hostId;
     clientIds = [];
+    points = [];
 
     constructor(channelId, hostId) {
         this.channelId = channelId;
@@ -108,6 +109,16 @@ wss.on("connection", (ws, req) => {
         case "/multiplayer/join":
             joinSession(clientId, channelId, ws);
             break;
+        case "/multiplayer/sync":
+            const updatedSession = message
+            let session = sessions.get(channelId);
+            session = updatedSession;
+            res.send(
+                {
+                    title: "Session Synced",
+                    channelId: channelId,
+                }
+    );
         default:
             break;
     }
@@ -121,6 +132,7 @@ app.use(morgan("combined"));
 app.get("/", (req, res) => {
     res.send({title: "Test"});
 });
+
 app.get("/multiplayer/create", async (req, res) => {
     const channel = await hop.channels.create(ChannelType.UNPROTECTED)
     const parameters = url.parse(req.url, true);
