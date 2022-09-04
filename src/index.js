@@ -47,6 +47,7 @@ function joinSession(clientId, channelId, ws) {
     console.log("Channel ID:", channelId);
 
     let session = sessions.get(channelId);
+    console.log(sessions);
     console.log(session);
     if (session !== undefined) {
         session.addClient(clientId);
@@ -107,6 +108,7 @@ app.get("/multiplayer/create", async (req, res) => {
     const channel = await hop.channels.create(ChannelType.UNPROTECTED)
     let session = new Session(channel.id);
     sessions.set(channel.id, session);
+    console.log(sessions)
 
     res.send(
         {
