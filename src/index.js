@@ -62,7 +62,7 @@ wss.on("connection", (ws, req) => {
     console.log("Client connected");
 
     ws.on("message", (message) => {
-        console.log("Received:", message);
+        console.log("Received:", message.data);
 
         switch (message) {
             case "start":
