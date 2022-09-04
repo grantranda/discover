@@ -15,6 +15,7 @@ const server = http.createServer();
 const wss = new WebSocketServer({server: server});
 const sessions = new Map();
 const clients = new Map();
+const clientList = [];
 
 wss.broadcast = function(data, sender) {
     wss.clients.forEach(function(client) {
@@ -91,6 +92,7 @@ wss.on("connection", (ws, req) => {
     let channelId = parameters.query.channelId;
 
     clients.set(clientId, ws);
+    clientList.push(ws);
 
     ws.on("message", (data, isBinary) => {
         const message = isBinary ? data : data.toString();
@@ -103,6 +105,10 @@ wss.on("connection", (ws, req) => {
                 const puzzle = tokens[1];
             } else {
                 console.log("Starting game");
+
+                clientList.forEach(function(client) {
+                    client.send(message);
+                });
                 let session = sessions.get(channelId);
                 if (session !== undefined) {
                     session.startGame();
