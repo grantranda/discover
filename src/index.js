@@ -29,13 +29,14 @@ class Session {
     hostId;
     clientIds = [];
 
-    constructor(channelId, hostId) {
+    constructor(channelId) {
         this.channelId = channelId;
-        this.hostId = hostId;
-        this.addClient(hostId);
     }
 
     addClient(clientId) {
+        if (this.clientIds.length <= 0) {
+            this.hostId = clientId;
+        }
         this.clientIds.push(clientId);
         console.log("Client added:", clientId);
     }
@@ -127,12 +128,7 @@ app.get("/", (req, res) => {
 });
 app.get("/multiplayer/create", async (req, res) => {
     const channel = await hop.channels.create(ChannelType.UNPROTECTED)
-    const parameters = url.parse(req.url, true);
-    console.log(parameters);
-    console.log(parameters.query);
-    console.log(req.url);
-    console.log("Host ID1:", parameters.query.hostId);
-    let session = new Session(channel.id, parameters.query.hostId);
+    let session = new Session(channel.id);
     sessions.set(channel.id, session);
 
     res.send(
