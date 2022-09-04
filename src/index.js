@@ -7,7 +7,6 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import * as url from "url";
-import {c} from "@onehop/js/dist/types-d4dfa8cd.js";
 
 class Session {
     channelId;
