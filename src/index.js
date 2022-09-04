@@ -52,9 +52,13 @@ class Session {
     startGame() {
         let host = clients.get(this.hostId);
         console.log("Host ID:", this.hostId);
-        console.log("Host:", host);
         if (host !== undefined) {
-            wss.broadcast("start", host);
+            // wss.broadcast("start", host);
+            for (let i = 0; i < this.clientIds.size; i++) {
+                clients.get(this.clientIds[i]).send(JSON.stringify({
+                    title: "Game starting"
+                }));
+            }
         }
     }
 }
@@ -92,15 +96,22 @@ wss.on("connection", (ws, req) => {
         const message = isBinary ? data : data.toString();
         console.log("Received:", message);
 
-        switch (message) {
-            case "start":
+        if (message.includes("start")) {
+            const tokens = message.split(" ");
+
+            if (tokens.length > 1) {
+                const puzzle = tokens[1];
+            } else {
                 console.log("Starting game");
                 let session = sessions.get(channelId);
-                console.log("Channel ID:", channelId);
-                console.log("Session:", session)
                 if (session !== undefined) {
                     session.startGame();
                 }
+            }
+        }
+
+        switch (message) {
+            case "start":
                 break;
             default:
                 break;
