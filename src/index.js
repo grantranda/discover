@@ -34,6 +34,14 @@ class Session {
     }
 }
 
+const projectToken = "ptk_c181NDNlZGUzZGM2ZmM1YTcxYzM0MWRkOGYyZTlkYzE2N181MDM4MTc3OTIyNjUzMzkxMw";
+export const hop = new Hop(projectToken)
+
+const app = express();
+const server = http.createServer();
+const wss = new WebSocketServer({server: server});
+const sessions = new Map();
+
 function joinSession(clientId, channelId, ws) {
     console.log("Client ID:", clientId);
     console.log("Channel ID:", channelId);
@@ -52,14 +60,6 @@ function joinSession(clientId, channelId, ws) {
         }));
     }
 }
-
-const projectToken = "ptk_c181NDNlZGUzZGM2ZmM1YTcxYzM0MWRkOGYyZTlkYzE2N181MDM4MTc3OTIyNjUzMzkxMw";
-export const hop = new Hop(projectToken)
-
-const app = express();
-const server = http.createServer();
-const wss = new WebSocketServer({server: server});
-const sessions = new Map();
 
 server.on("request", app);
 wss.on("connection", (ws, req) => {
